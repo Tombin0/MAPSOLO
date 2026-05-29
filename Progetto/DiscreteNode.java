@@ -1,0 +1,37 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class DiscreteNode extends SplitNode {
+
+    DiscreteNode(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
+        super(trainingSet, beginExampleIndex, endExampleIndex, attribute);
+    }
+
+    @Override
+    void setSplitInfo(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
+        List<SplitInfo> splits = new ArrayList<>();
+        int start = beginExampleIndex;
+        Object currentValue = trainingSet.getExplanatoryValue(start, attribute.getIndex());
+        int childIndex = 0;
+        for (int i = beginExampleIndex + 1; i <= endExampleIndex; i++) {
+            Object value = trainingSet.getExplanatoryValue(i, attribute.getIndex());
+            if (!currentValue.equals(value)) {
+                splits.add(new SplitInfo(currentValue, start, i - 1, childIndex++));
+                start = i;
+                currentValue = value;
+            }
+        }
+        splits.add(new SplitInfo(currentValue, start, endExampleIndex, childIndex));
+        mapSplit = splits.toArray(new SplitInfo[0]);
+    }
+
+    @Override
+    int testCondition(Object value) {
+        for (int i = 0; i < mapSplit.length; i++) {
+            if (mapSplit[i].getSplitValue().equals(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+}
