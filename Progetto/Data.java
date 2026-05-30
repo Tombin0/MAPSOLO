@@ -7,6 +7,9 @@ public class Data {
     private Attribute explanatorySet[];
     private ContinuousAttribute classAttribute;
 
+    /**
+     * Carica il dataset dal file e inizializza attributi e target.
+     */
     Data(String fileName) throws TrainingDataException {
         File inFile = new File(fileName);
         Scanner sc;
@@ -98,6 +101,10 @@ public class Data {
         }
     }
 
+    /**
+     * Restituisce la rappresentazione testuale dell'intero dataset.
+     */
+    @Override
     public String toString(){
         StringBuilder value = new StringBuilder();
         for(int i = 0; i < numberOfExamples; i++){
@@ -108,34 +115,58 @@ public class Data {
         return value.toString();
     }
 
+    /**
+     * Restituisce il numero di attributi esplicativi disponibili.
+     */
     public int getNumberOfExplanatoryAttributes(){
         return explanatorySet.length;
     }
 
+    /**
+     * Restituisce il numero di esempi presenti nel dataset.
+     */
     public int getNumberOfExamples(){
         return numberOfExamples;
     }
 
+    /**
+     * Restituisce il valore del target per l'esempio richiesto.
+     */
     public Double getClassValue(int exampleIndex){
         return (Double) data[exampleIndex][explanatorySet.length];
     }
 
+    /**
+     * Restituisce il valore dell'attributo esplicativo per l'esempio specificato.
+     */
     public Object getExplanatoryValue(int exampleIndex, int attributeIndex){
         return data[exampleIndex][attributeIndex];
     }
 
+    /**
+     * Restituisce l'attributo esplicativo in posizione index.
+     */
     public Attribute getExplanatoryAttribute(int index){
         return explanatorySet[index];
     }
 
+    /**
+     * Restituisce l'attributo target continuo.
+     */
     public ContinuousAttribute getClassAttribute(){
         return classAttribute;
     }
 
+    /**
+     * Ordina gli esempi in base all'attributo specificato.
+     */
     void sort(Attribute attribute, int beginExampleIndex, int endExampleIndex){
         quicksort(attribute, beginExampleIndex, endExampleIndex);
     }
 
+    /**
+     * Scambia due righe del dataset mantenendo tutti gli attributi e il target.
+     */
     private void swap(int i, int j){
         Object temp;
         for (int k = 0; k < getNumberOfExplanatoryAttributes() + 1; k++){
@@ -145,21 +176,43 @@ public class Data {
         }
     }
 
-    private int partition(DiscreteAttribute attribute, int inf, int sup){
-        int i, j;
-        i = inf;
-        j = sup;
+    /**
+     * Confronta due valori esplicativi per l'ordinamento.
+     * Supporta valori numerici e stringhe.
+     */
+    private int compareExplanatoryValues(Object a, Object b) {
+        if (a == null && b == null) {
+            return 0;
+        }
+        if (a == null) {
+            return -1;
+        }
+        if (b == null) {
+            return 1;
+        }
+        if (a instanceof Number && b instanceof Number) {
+            return Double.compare(((Number) a).doubleValue(), ((Number) b).doubleValue());
+        }
+        return a.toString().compareTo(b.toString());
+    }
+
+    /**
+     * Partiziona il dataset usando l'attributo specificato come pivot.
+     */
+    private int partition(Attribute attribute, int inf, int sup){
+        int i = inf;
+        int j = sup;
         int med = (inf + sup) / 2;
-        String x = (String) getExplanatoryValue(med, attribute.getIndex());
+        Object pivot = getExplanatoryValue(med, attribute.getIndex());
         swap(inf, med);
         while (true) {
-            while(i <= sup && ((String) getExplanatoryValue(i, attribute.getIndex())).compareTo(x) <= 0){
+            while (i <= sup && compareExplanatoryValues(getExplanatoryValue(i, attribute.getIndex()), pivot) <= 0) {
                 i++;
             }
-            while(((String) getExplanatoryValue(j, attribute.getIndex())).compareTo(x) > 0) {
+            while (compareExplanatoryValues(getExplanatoryValue(j, attribute.getIndex()), pivot) > 0) {
                 j--;
             }
-            if(i < j) {
+            if (i < j) {
                 swap(i, j);
             }
             else break;
@@ -168,9 +221,12 @@ public class Data {
         return j;
     }
 
+    /**
+     * Implementa l'algoritmo quicksort ricorsivo per ordinare il dataset.
+     */
     private void quicksort(Attribute attribute, int inf, int sup){
         if(sup >= inf){
-            int pos = partition((DiscreteAttribute) attribute, inf, sup);
+            int pos = partition(attribute, inf, sup);
             if ((pos - inf) < (sup - pos + 1)) {
                 quicksort(attribute, inf, pos - 1);
                 quicksort(attribute, pos + 1, sup);
@@ -182,6 +238,9 @@ public class Data {
         }
     }
 
+    /**
+     * Test locale per stampare il dataset e provare l'ordinamento.
+     */
     public static void main(String args[]) throws TrainingDataException {
         Data trainingSet = new Data("servo.dat");
         System.out.println(trainingSet);

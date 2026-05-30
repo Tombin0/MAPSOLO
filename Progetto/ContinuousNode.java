@@ -3,10 +3,16 @@ import java.util.List;
 
 public class ContinuousNode extends SplitNode {
 
+    /**
+     * Costruisce un nodo di split per un attributo continuo.
+     */
     public ContinuousNode(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
         super(trainingSet, beginExampleIndex, endExampleIndex, attribute);
     }
 
+    /**
+     * Determina il punto di split migliore per un attributo continuo basato sulla varianza.
+     */
     @Override
     void setSplitInfo(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
         Double currentSplitValue = (Double) trainingSet.getExplanatoryValue(beginExampleIndex, attribute.getIndex());
@@ -35,6 +41,9 @@ public class ContinuousNode extends SplitNode {
         }
     }
 
+    /**
+     * Restituisce l'indice del ramo corretto per un valore continuo di input.
+     */
     @Override
     int testCondition(Object value) {
         if (!(value instanceof Number)) {

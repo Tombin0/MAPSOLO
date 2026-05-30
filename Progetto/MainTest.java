@@ -5,6 +5,9 @@ import utility.Keyboard;
 
 class MainTest {
 
+    /**
+     * Avvia l'esecuzione del programma, legge il dataset e costruisce l'albero.
+     */
     public static void main(String[] args) {
         String dataFileName;
         if (args.length > 0) {
@@ -44,6 +47,9 @@ class MainTest {
         } while (Character.toUpperCase(risp) == 'Y');
     }
 
+    /**
+     * Risolve il percorso del file di dati a partire dalla directory corrente e dalle posizioni attese.
+     */
     private static String resolveDataFilePath(String fileName) {
         Path filePath = Paths.get(fileName);
         if (filePath.toFile().exists()) {

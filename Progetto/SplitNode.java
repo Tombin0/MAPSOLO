@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 abstract class SplitNode extends Node {
@@ -10,6 +9,9 @@ abstract class SplitNode extends Node {
         int numberChild;
         String comparator = "=";
 
+        /**
+         * Costruisce le informazioni di split senza comparatore esplicito.
+         */
         SplitInfo(Object splitValue, int beginIndex, int endIndex, int numberChild) {
             this.splitValue = splitValue;
             this.beginIndex = beginIndex;
@@ -17,6 +19,9 @@ abstract class SplitNode extends Node {
             this.numberChild = numberChild;
         }
 
+        /**
+         * Costruisce le informazioni di split con comparatore specifico.
+         */
         SplitInfo(Object splitValue, int beginIndex, int endIndex, int numberChild, String comparator) {
             this.splitValue = splitValue;
             this.beginIndex = beginIndex;
@@ -25,22 +30,37 @@ abstract class SplitNode extends Node {
             this.comparator = comparator;
         }
 
+        /**
+         * Restituisce l'indice iniziale dell'intervallo di esempi dello split.
+         */
         int getBeginindex() {
             return beginIndex;
         }
 
+        /**
+         * Restituisce l'indice finale dell'intervallo di esempi dello split.
+         */
         int getEndIndex() {
             return endIndex;
         }
 
+        /**
+         * Restituisce il valore di split associato al child.
+         */
         Object getSplitValue() {
             return splitValue;
         }
 
+        /**
+         * Rappresentazione testuale dello split.
+         */
         public String toString() {
             return "child " + numberChild + " split value" + comparator + splitValue + " [Examples:" + beginIndex + "-" + endIndex + "]";
         }
 
+        /**
+         * Restituisce l'operatore usato nello split.
+         */
         String getComparator() {
             return comparator;
         }
@@ -51,10 +71,19 @@ abstract class SplitNode extends Node {
     protected Node[] children;
     double splitVariance;
 
+    /**
+     * Imposta le informazioni di suddivisione per il nodo.
+     */
     abstract void setSplitInfo(Data trainingSet, int beginExampelIndex, int endExampleIndex, Attribute attribute);
 
+    /**
+     * Valuta a quale figlio corrisponde un valore di input.
+     */
     abstract int testCondition(Object value);
 
+    /**
+     * Costruisce un nodo di split e calcola la varianza complessiva dello split.
+     */
     SplitNode(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
         super(trainingSet, beginExampleIndex, endExampleIndex);
         this.attribute = attribute;
@@ -67,28 +96,46 @@ abstract class SplitNode extends Node {
         }
     }
 
+    /**
+     * Assegna ai figli i nodi calcolati dal processo di apprendimento.
+     */
     void setChildren(Node[] children) {
         this.children = children;
     }
 
+    /**
+     * Restituisce l'attributo su cui è basato lo split.
+     */
     Attribute getAttribute() {
         return attribute;
     }
 
+    /**
+     * Restituisce la varianza dello split invece della varianza del nodo.
+     */
     @Override
     double getVariance() {
         return splitVariance;
     }
 
+    /**
+     * Restituisce il numero di rami generati dallo split.
+     */
     @Override
     int getNumberOfChildren() {
         return mapSplit.length;
     }
 
+    /**
+     * Restituisce le informazioni di split per un figlio specifico.
+     */
     SplitInfo getSplitInfo(int child) {
         return mapSplit[child];
     }
 
+    /**
+     * Crea una domanda testuale per la fase di predizione.
+     */
     String formulateQuery() {
         String query = "";
         for (int i = 0; i < mapSplit.length; i++)
@@ -96,6 +143,9 @@ abstract class SplitNode extends Node {
         return query;
     }
 
+    /**
+     * Stampa l'albero a partire da questo nodo di split.
+     */
     @Override
     void printTree(String indent) {
         System.out.print(indent + this);
@@ -107,6 +157,9 @@ abstract class SplitNode extends Node {
         }
     }
 
+    /**
+     * Costruisce le regole ricorsivamente per tutti i figli.
+     */
     @Override
     void collectRules(String prefix, List<String> rules) {
         for (int i = 0; i < mapSplit.length; i++) {
@@ -121,6 +174,9 @@ abstract class SplitNode extends Node {
         }
     }
 
+    /**
+     * Rappresentazione testuale completa del nodo di split.
+     */
     @Override
     public String toString() {
         String splitType = attribute instanceof DiscreteAttribute ? "DISCRETE SPLIT" : "CONTINUOUS SPLIT";

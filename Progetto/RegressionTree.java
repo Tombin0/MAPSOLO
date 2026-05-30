@@ -3,6 +3,9 @@ import utility.Keyboard;
 public class RegressionTree {
     private Node root;
 
+    /**
+     * Costruisce l'albero di regressione a partire dal dataset di training.
+     */
     public RegressionTree(Data trainingSet) {
         Attribute[] availableAttributes = new Attribute[trainingSet.getNumberOfExplanatoryAttributes()];
         for (int i = 0; i < availableAttributes.length; i++) {
@@ -12,10 +15,16 @@ public class RegressionTree {
         root = learnTree(trainingSet, 0, trainingSet.getNumberOfExamples() - 1, numberOfExamplesPerLeaf, availableAttributes);
     }
 
+    /**
+     * Determina se il nodo deve diventare una foglia in base alla dimensione minima.
+     */
     private boolean isLeaf(Data trainingSet, int begin, int end, int numberOfExamplesPerLeaf) {
         return (end - begin + 1) <= numberOfExamplesPerLeaf;
     }
 
+    /**
+     * Valuta tutti gli attributi disponibili e restituisce lo split migliore.
+     */
     private SplitNode determineBestSplitNode(Data trainingSet, int begin, int end, Attribute[] availableAttributes) {
         SplitNode bestSplit = null;
         double bestVariance = Double.POSITIVE_INFINITY;
@@ -39,6 +48,9 @@ public class RegressionTree {
         return bestSplit;
     }
 
+    /**
+     * Costruisce l'albero ricorsivamente, creando foglie o nodi di split.
+     */
     private Node learnTree(Data trainingSet, int begin, int end, int numberOfExamplesPerLeaf, Attribute[] availableAttributes) {
         if (begin > end) {
             return null;
@@ -63,6 +75,9 @@ public class RegressionTree {
         return bestSplit;
     }
 
+    /**
+     * Rimuove l'attributo già utilizzato dall'elenco di attributi disponibili.
+     */
     private Attribute[] removeAttribute(Attribute[] attributes, Attribute attributeToRemove) {
         Attribute[] result = new Attribute[attributes.length - 1];
         int idx = 0;
@@ -74,6 +89,9 @@ public class RegressionTree {
         return result;
     }
 
+    /**
+     * Stampa tutte le regole estratte dall'albero.
+     */
     public void printRules() {
         System.out.println("********* RULES **********");
         if (root != null) {
@@ -82,6 +100,9 @@ public class RegressionTree {
         System.out.println("*************************");
     }
 
+    /**
+     * Stampa la rappresentazione testuale dell'intero albero.
+     */
     public void printTree() {
         System.out.println("********* TREE **********");
         if (root != null) {
@@ -90,6 +111,9 @@ public class RegressionTree {
         System.out.println("*************************");
     }
 
+    /**
+     * Avvia la predizione partendo dalla radice.
+     */
     public Double predictClass() throws UnknownValueException {
         if (root == null) {
             return null;
@@ -97,6 +121,9 @@ public class RegressionTree {
         return predictClass(root);
     }
 
+    /**
+     * Predice il valore seguendo i rami dell'albero in base alle risposte dell'utente.
+     */
     private Double predictClass(Node current) throws UnknownValueException {
         if (current instanceof LeafNode) {
             return ((LeafNode) current).getMean();
