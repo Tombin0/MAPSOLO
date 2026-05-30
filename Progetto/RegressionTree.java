@@ -1,3 +1,5 @@
+import utility.Keyboard;
+
 public class RegressionTree {
     private Node root;
 
@@ -86,5 +88,26 @@ public class RegressionTree {
             root.printTree("");
         }
         System.out.println("*************************");
+    }
+
+    public Double predictClass() throws UnknownValueException {
+        if (root == null) {
+            return null;
+        }
+        return predictClass(root);
+    }
+
+    private Double predictClass(Node current) throws UnknownValueException {
+        if (current instanceof LeafNode) {
+            return ((LeafNode) current).getMean();
+        }
+
+        SplitNode splitNode = (SplitNode) current;
+        System.out.println(splitNode.formulateQuery());
+        int risp = Keyboard.readInt();
+        if (risp < 0 || risp >= splitNode.getNumberOfChildren()) {
+            throw new UnknownValueException("The answer should be an integer between 0 and " + (splitNode.getNumberOfChildren() - 1) + "!");
+        }
+        return predictClass(splitNode.children[risp]);
     }
 }

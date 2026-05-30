@@ -37,8 +37,17 @@ public class ContinuousNode extends SplitNode {
 
     @Override
     int testCondition(Object value) {
+        if (!(value instanceof Number)) {
+            return -1;
+        }
+        double numericValue = ((Number) value).doubleValue();
         for (int i = 0; i < mapSplit.length; i++) {
-            if (mapSplit[i].getSplitValue().equals(value)) {
+            String comparator = mapSplit[i].getComparator();
+            double splitValue = ((Double) mapSplit[i].getSplitValue()).doubleValue();
+            if ("<=".equals(comparator) && numericValue <= splitValue) {
+                return i;
+            }
+            if (">".equals(comparator) && numericValue > splitValue) {
                 return i;
             }
         }

@@ -1,45 +1,74 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import utility.Keyboard;
 
 class MainTest {
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) throws FileNotFoundException {
-        String dataFileName = resolveDataFilePath(args);
-        Data trainingSet = new Data(dataFileName);
+    public static void main(String[] args) {
+        String dataFileName;
+        if (args.length > 0) {
+            dataFileName = args[0];
+        } else {
+            System.out.println("Training set:");
+            dataFileName = Keyboard.readString();
+        }
 
+        dataFileName = resolveDataFilePath(dataFileName);
+
+        System.out.println("Starting data acquisition phase!");
+        Data trainingSet;
+        try {
+            trainingSet = new Data(dataFileName);
+        } catch (TrainingDataException e) {
+            System.out.println(e);
+            return;
+        }
+
+        System.out.println("Starting learning phase!");
         RegressionTree tree = new RegressionTree(trainingSet);
 
         tree.printRules();
         tree.printTree();
+
+        char risp;
+        do {
+            System.out.println("Starting prediction phase!");
+            try {
+                System.out.println(tree.predictClass());
+            } catch (UnknownValueException e) {
+                System.out.println(e);
+            }
+            System.out.println("Would you repeat ? (y/n)");
+            risp = Keyboard.readChar();
+        } while (Character.toUpperCase(risp) == 'Y');
     }
 
-    private static String resolveDataFilePath(String[] args) {
-        if (args.length > 0) {
-            return args[0];
+    private static String resolveDataFilePath(String fileName) {
+        Path filePath = Paths.get(fileName);
+        if (filePath.toFile().exists()) {
+            return fileName;
         }
 
         Path cwd = Paths.get(System.getProperty("user.dir"));
-        Path candidate = cwd.resolve("servo.dat");
+        Path candidate = cwd.resolve(fileName);
         if (candidate.toFile().exists()) {
             return candidate.toString();
         }
 
-        candidate = cwd.resolve("Progetto").resolve("servo.dat");
+        candidate = cwd.resolve("Progetto").resolve(fileName);
         if (candidate.toFile().exists()) {
             return candidate.toString();
         }
 
-        candidate = cwd.resolve("../Progetto").resolve("servo.dat").normalize();
+        candidate = cwd.resolve("..")
+                .resolve("Progetto")
+                .resolve(fileName)
+                .normalize();
         if (candidate.toFile().exists()) {
             return candidate.toString();
         }
 
-        // Fallback to relative path in Progetto when running from workspace root
-        return "Progetto" + File.separator + "servo.dat";
+        return fileName;
     }
 }
