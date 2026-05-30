@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 abstract class SplitNode extends Node {
     // Classe che colelzione informazioni descrittive dello split
     class SplitInfo {
@@ -72,10 +75,12 @@ abstract class SplitNode extends Node {
         return attribute;
     }
 
+    @Override
     double getVariance() {
         return splitVariance;
     }
 
+    @Override
     int getNumberOfChildren() {
         return mapSplit.length;
     }
@@ -87,7 +92,7 @@ abstract class SplitNode extends Node {
     String formulateQuery() {
         String query = "";
         for (int i = 0; i < mapSplit.length; i++)
-            query += (i + ":" + attribute + mapSplit[i].getComparator() + mapSplit[i].getSplitValue()) + "\\n";
+            query += (i + ":" + attribute + mapSplit[i].getComparator() + mapSplit[i].getSplitValue()) + "\n";
         return query;
     }
 
@@ -103,21 +108,23 @@ abstract class SplitNode extends Node {
     }
 
     @Override
-    void printRules(String prefix) {
+    void collectRules(String prefix, List<String> rules) {
         for (int i = 0; i < mapSplit.length; i++) {
             String condition = attribute.getName() + mapSplit[i].getComparator() + mapSplit[i].getSplitValue();
             String newPrefix = prefix.isEmpty() ? condition : prefix + " AND " + condition;
             if (children != null && i < children.length && children[i] != null) {
-                children[i].printRules(newPrefix);
+                children[i].collectRules(newPrefix, rules);
             } else {
                 double mean = new LeafNode(trainingSet, mapSplit[i].getBeginindex(), mapSplit[i].getEndIndex()).getMean();
-                System.out.printf("IF %s THEN class=%.6f%n", newPrefix, mean);
+                rules.add(newPrefix + " ==> Class=" + mean);
             }
         }
     }
 
+    @Override
     public String toString() {
-        String v = "SPLIT : attribute=" + attribute + " " + super.toString() + " Split Variance: " + getVariance() + "\n";
+        String splitType = attribute instanceof DiscreteAttribute ? "DISCRETE SPLIT" : "CONTINUOUS SPLIT";
+        String v = splitType + " : attribute=" + attribute + " Nodo: " + super.toString() + " variance:" + variance + " Split Variance: " + getVariance() + "\n";
         for (int i = 0; i < mapSplit.length; i++) {
             v += "\t" + mapSplit[i] + "\n";
         }

@@ -1,6 +1,7 @@
+import java.util.List;
+
 class LeafNode extends Node {
     private final double mean;
-    private final double variance;
 
     LeafNode(Data trainingSet, int beginIndex, int endIndex) {
         super(trainingSet, beginIndex, endIndex);
@@ -10,17 +11,6 @@ class LeafNode extends Node {
             sum += trainingSet.getClassValue(i);
         }
         mean = sum / count;
-        double sumSq = 0.0;
-        for (int i = beginIndex; i <= endIndex; i++) {
-            double diff = trainingSet.getClassValue(i) - mean;
-            sumSq += diff * diff;
-        }
-        variance = sumSq;
-    }
-
-    @Override
-    double getVariance() {
-        return variance;
     }
 
     double getMean() {
@@ -29,19 +19,16 @@ class LeafNode extends Node {
 
     @Override
     void printTree(String indent) {
-        System.out.printf("%sLEAF %s mean=%.6f variance=%.6f%n", indent, super.toString(), mean, variance);
+        System.out.printf("%sLEAF : class=%.6f Nodo: %s variance:%.6f%n", indent, mean, super.toString(), variance);
     }
 
     @Override
-    void printRules(String prefix) {
+    void collectRules(String prefix, List<String> rules) {
         String rule = prefix.trim();
-        if (rule.endsWith("AND")) {
-            rule = rule.substring(0, rule.length() - 3).trim();
-        }
         if (rule.isEmpty()) {
-            System.out.printf("IF TRUE THEN class=%.6f%n", mean);
+            rules.add("TRUE ==> Class=" + mean);
         } else {
-            System.out.printf("IF %s THEN class=%.6f%n", rule, mean);
+            rules.add(rule + " ==> Class=" + mean);
         }
     }
 }

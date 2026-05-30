@@ -6,40 +6,56 @@ public class RegressionTree {
         for (int i = 0; i < availableAttributes.length; i++) {
             availableAttributes[i] = trainingSet.getExplanatoryAttribute(i);
         }
-        root = buildTree(trainingSet, 0, trainingSet.getNumberOfExamples() - 1, availableAttributes);
+        int numberOfExamplesPerLeaf = Math.max(1, (int) Math.ceil(trainingSet.getNumberOfExamples() * 0.1));
+        root = learnTree(trainingSet, 0, trainingSet.getNumberOfExamples() - 1, numberOfExamplesPerLeaf, availableAttributes);
     }
 
-    private Node buildTree(Data trainingSet, int beginIndex, int endIndex, Attribute[] availableAttributes) {
-        LeafNode leaf = new LeafNode(trainingSet, beginIndex, endIndex);
-        if (beginIndex >= endIndex || availableAttributes.length == 0) {
-            return leaf;
-        }
+    private boolean isLeaf(Data trainingSet, int begin, int end, int numberOfExamplesPerLeaf) {
+        return (end - begin + 1) <= numberOfExamplesPerLeaf;
+    }
 
-        Attribute bestAttribute = null;
+    private SplitNode determineBestSplitNode(Data trainingSet, int begin, int end, Attribute[] availableAttributes) {
         SplitNode bestSplit = null;
-        double bestVariance = leaf.getVariance();
+        double bestVariance = Double.POSITIVE_INFINITY;
 
         for (Attribute attribute : availableAttributes) {
-            DiscreteNode candidate = new DiscreteNode(trainingSet, beginIndex, endIndex, attribute);
+            SplitNode candidate;
+            if (attribute instanceof DiscreteAttribute) {
+                candidate = new DiscreteNode(trainingSet, begin, end, attribute);
+            } else {
+                candidate = new ContinuousNode(trainingSet, begin, end, attribute);
+            }
             if (candidate.getNumberOfChildren() <= 1) {
                 continue;
             }
             if (candidate.getVariance() < bestVariance) {
                 bestVariance = candidate.getVariance();
                 bestSplit = candidate;
-                bestAttribute = attribute;
             }
         }
 
+        return bestSplit;
+    }
+
+    private Node learnTree(Data trainingSet, int begin, int end, int numberOfExamplesPerLeaf, Attribute[] availableAttributes) {
+        if (begin > end) {
+            return null;
+        }
+        LeafNode leaf = new LeafNode(trainingSet, begin, end);
+        if (begin == end || availableAttributes.length == 0 || isLeaf(trainingSet, begin, end, numberOfExamplesPerLeaf)) {
+            return leaf;
+        }
+
+        SplitNode bestSplit = determineBestSplitNode(trainingSet, begin, end, availableAttributes);
         if (bestSplit == null) {
             return leaf;
         }
 
-        Attribute[] remainingAttributes = removeAttribute(availableAttributes, bestAttribute);
+        Attribute[] remainingAttributes = removeAttribute(availableAttributes, bestSplit.getAttribute());
         Node[] children = new Node[bestSplit.getNumberOfChildren()];
         for (int i = 0; i < bestSplit.getNumberOfChildren(); i++) {
             SplitNode.SplitInfo info = bestSplit.getSplitInfo(i);
-            children[i] = buildTree(trainingSet, info.getBeginindex(), info.getEndIndex(), remainingAttributes);
+            children[i] = learnTree(trainingSet, info.getBeginindex(), info.getEndIndex(), numberOfExamplesPerLeaf, remainingAttributes);
         }
         bestSplit.setChildren(children);
         return bestSplit;
@@ -57,14 +73,18 @@ public class RegressionTree {
     }
 
     public void printRules() {
+        System.out.println("********* RULES **********");
         if (root != null) {
             root.printRules("");
         }
+        System.out.println("*************************");
     }
 
     public void printTree() {
+        System.out.println("********* TREE **********");
         if (root != null) {
             root.printTree("");
         }
+        System.out.println("*************************");
     }
 }
