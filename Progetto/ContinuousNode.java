@@ -35,9 +35,9 @@ public class ContinuousNode extends SplitNode {
             }
         }
         if (bestMapSplit == null) {
-            mapSplit = new SplitInfo[0];
+            mapSplit = new ArrayList<>();
         } else {
-            mapSplit = bestMapSplit.toArray(new SplitInfo[0]);
+            mapSplit = bestMapSplit;
         }
     }
 
@@ -50,15 +50,17 @@ public class ContinuousNode extends SplitNode {
             return -1;
         }
         double numericValue = ((Number) value).doubleValue();
-        for (int i = 0; i < mapSplit.length; i++) {
-            String comparator = mapSplit[i].getComparator();
-            double splitValue = ((Double) mapSplit[i].getSplitValue()).doubleValue();
+        int index = 0;
+        for (SplitInfo info : mapSplit) {
+            String comparator = info.getComparator();
+            double splitValue = ((Double) info.getSplitValue()).doubleValue();
             if ("<=".equals(comparator) && numericValue <= splitValue) {
-                return i;
+                return index;
             }
             if (">".equals(comparator) && numericValue > splitValue) {
-                return i;
+                return index;
             }
+            index++;
         }
         return -1;
     }

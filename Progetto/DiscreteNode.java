@@ -28,7 +28,7 @@ public class DiscreteNode extends SplitNode {
             }
         }
         splits.add(new SplitInfo(currentValue, start, endExampleIndex, childIndex));
-        mapSplit = splits.toArray(new SplitInfo[0]);
+        mapSplit = splits;
     }
 
     /**
@@ -36,10 +36,12 @@ public class DiscreteNode extends SplitNode {
      */
     @Override
     int testCondition(Object value) {
-        for (int i = 0; i < mapSplit.length; i++) {
-            if (mapSplit[i].getSplitValue().equals(value)) {
-                return i;
+        int index = 0;
+        for (SplitInfo info : mapSplit) {
+            if (info.getSplitValue().equals(value)) {
+                return index;
             }
+            index++;
         }
         return -1;
     }

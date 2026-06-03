@@ -1,10 +1,12 @@
 import java.io.File;
 import java.util.Scanner;
+import java.util.List;
+import java.util.LinkedList;
 
 public class Data {
     private Object data [][];
     private int numberOfExamples;
-    private Attribute explanatorySet[];
+    private List<Attribute> explanatorySet;
     private ContinuousAttribute classAttribute;
 
     /**
@@ -34,7 +36,7 @@ public class Data {
                 throw new TrainingDataException("Invalid schema declaration");
             }
 
-            explanatorySet = new Attribute[Integer.parseInt(s[1])];
+            explanatorySet = new LinkedList<Attribute>();
             int iAttribute = 0;
             while (sc.hasNextLine()) {
                 line = sc.nextLine().trim();
@@ -47,7 +49,7 @@ public class Data {
                 s = line.split(" ");
                 if (s[0].equals("@desc")) {
                     String discreteValues[] = s[2].split(",");
-                    explanatorySet[iAttribute] = new DiscreteAttribute(s[1], iAttribute, discreteValues);
+                    explanatorySet.add(new DiscreteAttribute(s[1], iAttribute, discreteValues));
                 } else if (s[0].equals("@target")) {
                     classAttribute = new ContinuousAttribute(s[1], iAttribute);
                 }
@@ -71,7 +73,7 @@ public class Data {
                 throw new TrainingDataException("Training set empty");
             }
 
-            data = new Object[numberOfExamples][explanatorySet.length + 1];
+            data = new Object[numberOfExamples][explanatorySet.size() + 1];
             int iRow = 0;
             while (sc.hasNextLine()) {
                 line = sc.nextLine();
@@ -79,7 +81,7 @@ public class Data {
                     continue;
                 }
                 s = line.split(",");
-                if (s.length != explanatorySet.length + 1) {
+                if (s.length != explanatorySet.size() + 1) {
                     throw new TrainingDataException("Invalid example format");
                 }
                 for (int jColumn = 0; jColumn < s.length - 1; jColumn++) {
@@ -108,9 +110,9 @@ public class Data {
     public String toString(){
         StringBuilder value = new StringBuilder();
         for(int i = 0; i < numberOfExamples; i++){
-            for(int j = 0; j < explanatorySet.length; j++)
+            for(int j = 0; j < explanatorySet.size(); j++)
                 value.append(data[i][j]).append(",");
-            value.append(data[i][explanatorySet.length]).append("\n");
+            value.append(data[i][explanatorySet.size()]).append("\n");
         }
         return value.toString();
     }
@@ -119,7 +121,7 @@ public class Data {
      * Restituisce il numero di attributi esplicativi disponibili.
      */
     public int getNumberOfExplanatoryAttributes(){
-        return explanatorySet.length;
+        return explanatorySet.size();
     }
 
     /**
@@ -133,7 +135,7 @@ public class Data {
      * Restituisce il valore del target per l'esempio richiesto.
      */
     public Double getClassValue(int exampleIndex){
-        return (Double) data[exampleIndex][explanatorySet.length];
+        return (Double) data[exampleIndex][explanatorySet.size()];
     }
 
     /**
@@ -147,7 +149,7 @@ public class Data {
      * Restituisce l'attributo esplicativo in posizione index.
      */
     public Attribute getExplanatoryAttribute(int index){
-        return explanatorySet[index];
+        return explanatorySet.get(index);
     }
 
     /**

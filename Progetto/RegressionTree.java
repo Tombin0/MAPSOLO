@@ -1,4 +1,6 @@
 import utility.Keyboard;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class RegressionTree {
     private Node root;
@@ -23,11 +25,10 @@ public class RegressionTree {
     }
 
     /**
-     * Valuta tutti gli attributi disponibili e restituisce lo split migliore.
+     * Valuta tutti gli attributi disponibili e restituisce lo split migliore usando TreeSet.
      */
     private SplitNode determineBestSplitNode(Data trainingSet, int begin, int end, Attribute[] availableAttributes) {
-        SplitNode bestSplit = null;
-        double bestVariance = Double.POSITIVE_INFINITY;
+        TreeSet<SplitNode> splitCandidates = new TreeSet<>();
 
         for (Attribute attribute : availableAttributes) {
             SplitNode candidate;
@@ -36,16 +37,13 @@ public class RegressionTree {
             } else {
                 candidate = new ContinuousNode(trainingSet, begin, end, attribute);
             }
-            if (candidate.getNumberOfChildren() <= 1) {
-                continue;
-            }
-            if (candidate.getVariance() < bestVariance) {
-                bestVariance = candidate.getVariance();
-                bestSplit = candidate;
+            if (candidate.getNumberOfChildren() > 1) {
+                splitCandidates.add(candidate);
             }
         }
 
-        return bestSplit;
+        // TreeSet è ordinato per compareTo(), quindi il primo elemento ha la varianza minima
+        return splitCandidates.isEmpty() ? null : splitCandidates.first();
     }
 
     /**

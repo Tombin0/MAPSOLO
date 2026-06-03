@@ -1,6 +1,7 @@
 import java.util.List;
+import java.util.ArrayList;
 
-abstract class SplitNode extends Node {
+abstract class SplitNode extends Node implements Comparable<SplitNode> {
     // Classe che colelzione informazioni descrittive dello split
     class SplitInfo {
         Object splitValue;
@@ -67,7 +68,7 @@ abstract class SplitNode extends Node {
     }
 
     Attribute attribute;
-    SplitInfo mapSplit[];
+    List<SplitInfo> mapSplit;
     protected Node[] children;
     double splitVariance;
 
@@ -90,8 +91,8 @@ abstract class SplitNode extends Node {
         trainingSet.sort(attribute, beginExampleIndex, endExampleIndex);
         setSplitInfo(trainingSet, beginExampleIndex, endExampleIndex, attribute);
         splitVariance = 0;
-        for (int i = 0; i < mapSplit.length; i++) {
-            double localVariance = new LeafNode(trainingSet, mapSplit[i].getBeginindex(), mapSplit[i].getEndIndex()).getVariance();
+        for (SplitInfo info : mapSplit) {
+            double localVariance = new LeafNode(trainingSet, info.getBeginindex(), info.getEndIndex()).getVariance();
             splitVariance += localVariance;
         }
     }
@@ -123,14 +124,14 @@ abstract class SplitNode extends Node {
      */
     @Override
     int getNumberOfChildren() {
-        return mapSplit.length;
+        return mapSplit.size();
     }
 
     /**
      * Restituisce le informazioni di split per un figlio specifico.
      */
     SplitInfo getSplitInfo(int child) {
-        return mapSplit[child];
+        return mapSplit.get(child);
     }
 
     /**
@@ -138,8 +139,11 @@ abstract class SplitNode extends Node {
      */
     String formulateQuery() {
         String query = "";
-        for (int i = 0; i < mapSplit.length; i++)
-            query += (i + ":" + attribute + mapSplit[i].getComparator() + mapSplit[i].getSplitValue()) + "\n";
+        int index = 0;
+        for (SplitInfo info : mapSplit) {
+            query += (index + ":" + attribute + info.getComparator() + info.getSplitValue()) + "\n";
+            index++;
+        }
         return query;
     }
 
@@ -162,15 +166,17 @@ abstract class SplitNode extends Node {
      */
     @Override
     void collectRules(String prefix, List<String> rules) {
-        for (int i = 0; i < mapSplit.length; i++) {
-            String condition = attribute.getName() + mapSplit[i].getComparator() + mapSplit[i].getSplitValue();
+        int index = 0;
+        for (SplitInfo info : mapSplit) {
+            String condition = attribute.getName() + info.getComparator() + info.getSplitValue();
             String newPrefix = prefix.isEmpty() ? condition : prefix + " AND " + condition;
-            if (children != null && i < children.length && children[i] != null) {
-                children[i].collectRules(newPrefix, rules);
+            if (children != null && index < children.length && children[index] != null) {
+                children[index].collectRules(newPrefix, rules);
             } else {
-                double mean = new LeafNode(trainingSet, mapSplit[i].getBeginindex(), mapSplit[i].getEndIndex()).getMean();
+                double mean = new LeafNode(trainingSet, info.getBeginindex(), info.getEndIndex()).getMean();
                 rules.add(newPrefix + " ==> Class=" + mean);
             }
+            index++;
         }
     }
 
@@ -181,9 +187,19 @@ abstract class SplitNode extends Node {
     public String toString() {
         String splitType = attribute instanceof DiscreteAttribute ? "DISCRETE SPLIT" : "CONTINUOUS SPLIT";
         String v = splitType + " : attribute=" + attribute + " Nodo: " + super.toString() + " variance:" + variance + " Split Variance: " + getVariance() + "\n";
-        for (int i = 0; i < mapSplit.length; i++) {
-            v += "\t" + mapSplit[i] + "\n";
+        for (SplitInfo info : mapSplit) {
+            v += "\t" + info + "\n";
         }
         return v;
+    }
+
+    /**
+     * Implementa Comparable per confrontare SplitNode basato su splitVariance.
+     * Restituisce un valore negativo se this ha varianza minore (meglio),
+     * zero se uguali, positivo se this ha varianza maggiore (peggio).
+     */
+    @Override
+    public int compareTo(SplitNode other) {
+        return Double.compare(this.splitVariance, other.splitVariance);
     }
 }
