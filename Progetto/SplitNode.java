@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 abstract class SplitNode extends Node implements Comparable<SplitNode> {
     // Classe che colelzione informazioni descrittive dello split
-    class SplitInfo {
+    static class SplitInfo implements java.io.Serializable {
         Object splitValue;
         int beginIndex;
         int endIndex;

@@ -1,8 +1,10 @@
 import utility.Keyboard;
 import java.util.Set;
 import java.util.TreeSet;
+import java.io.*;
 
-public class RegressionTree {
+public class RegressionTree implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private Node root;
 
     /**
@@ -134,5 +136,23 @@ public class RegressionTree {
             throw new UnknownValueException("The answer should be an integer between 0 and " + (splitNode.getNumberOfChildren() - 1) + "!");
         }
         return predictClass(splitNode.children[risp]);
+    }
+
+    /**
+     * Salva l'oggetto RegressionTree su file usando serializzazione Java.
+     */
+    public void salva(String fileName) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            oos.writeObject(this);
+        }
+    }
+
+    /**
+     * Carica una RegressionTree serializzata da file.
+     */
+    public static RegressionTree carica(String fileName) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (RegressionTree) ois.readObject();
+        }
     }
 }

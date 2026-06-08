@@ -1,6 +1,10 @@
-public abstract class Attribute {
+import java.io.Serializable;
+
+public abstract class Attribute implements Serializable {
     private String name;
     private int index;
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Costruisce un attributo con nome e indice.

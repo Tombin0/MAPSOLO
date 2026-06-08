@@ -3,7 +3,9 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.LinkedList;
 
-public class Data {
+public class Data implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
     private Object data [][];
     private int numberOfExamples;
     private List<Attribute> explanatorySet;
@@ -48,8 +50,13 @@ public class Data {
                 }
                 s = line.split(" ");
                 if (s[0].equals("@desc")) {
-                    String discreteValues[] = s[2].split(",");
-                    explanatorySet.add(new DiscreteAttribute(s[1], iAttribute, discreteValues));
+                    if (s.length >= 3) {
+                        String discreteValues[] = s[2].split(",");
+                        explanatorySet.add(new DiscreteAttribute(s[1], iAttribute, discreteValues));
+                    } else {
+                        // attribute declared without explicit discrete values -> treat as continuous
+                        explanatorySet.add(new ContinuousAttribute(s[1], iAttribute));
+                    }
                 } else if (s[0].equals("@target")) {
                     classAttribute = new ContinuousAttribute(s[1], iAttribute);
                 }
@@ -85,7 +92,16 @@ public class Data {
                     throw new TrainingDataException("Invalid example format");
                 }
                 for (int jColumn = 0; jColumn < s.length - 1; jColumn++) {
-                    data[iRow][jColumn] = s[jColumn].trim();
+                    Attribute attr = explanatorySet.get(jColumn);
+                    if (attr instanceof ContinuousAttribute) {
+                        try {
+                            data[iRow][jColumn] = Double.parseDouble(s[jColumn].trim());
+                        } catch (NumberFormatException e) {
+                            throw new TrainingDataException("Invalid numeric explanatory value", e);
+                        }
+                    } else {
+                        data[iRow][jColumn] = s[jColumn].trim();
+                    }
                 }
                 try {
                     data[iRow][s.length - 1] = Double.parseDouble(s[s.length - 1].trim());

@@ -1,11 +1,14 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class Node {
+abstract class Node implements Serializable {
     protected Data trainingSet;
     protected int beginIndex;
     protected int endIndex;
     protected double variance;
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Costruisce un nodo dell'albero usando l'intervallo di esempi specificato.

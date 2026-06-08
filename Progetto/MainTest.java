@@ -8,32 +8,46 @@ class MainTest {
      * Avvia l'esecuzione del programma, legge il dataset e costruisce l'albero.
      */
     public static void main(String[] args) {
-        String dataFileName;
-        if (args.length > 0) {
-            dataFileName = args[0];
+        int decision = 0;
+        do {
+            System.out.println("Learn Regression Tree from data [1]");
+            System.out.println("Load Regression Tree from archive [2]");
+            decision = Keyboard.readInt();
+        } while (!(decision == 1) && !(decision == 2));
+
+        System.out.println("File name:");
+        String trainingfileName = Keyboard.readString();
+
+        RegressionTree tree = null;
+        if (decision == 1) {
+            System.out.println("Starting data acquisition phase!");
+            Data trainingSet = null;
+            try {
+                trainingSet = new Data(resolveDataFilePath(trainingfileName + ".dat"));
+            } catch (TrainingDataException e) {
+                System.out.println(e);
+                return;
+            }
+
+            System.out.println("Starting learning phase!");
+            tree = new RegressionTree(trainingSet);
+            try {
+                tree.salva(trainingfileName + ".dmp");
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         } else {
-            System.out.println("Training set:");
-            dataFileName = Keyboard.readString();
+            try {
+                tree = RegressionTree.carica(trainingfileName + ".dmp");
+            } catch (ClassNotFoundException | java.io.IOException e) {
+                System.out.println(e);
+                return;
+            }
         }
-
-        dataFileName = resolveDataFilePath(dataFileName);
-
-        System.out.println("Starting data acquisition phase!");
-        Data trainingSet;
-        try {
-            trainingSet = new Data(dataFileName);
-        } catch (TrainingDataException e) {
-            System.out.println(e);
-            return;
-        }
-
-        System.out.println("Starting learning phase!");
-        RegressionTree tree = new RegressionTree(trainingSet);
 
         tree.printRules();
-        tree.printTree();
 
-        char risp;
+        char risp = 'y';
         do {
             System.out.println("Starting prediction phase!");
             try {
