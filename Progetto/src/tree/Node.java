@@ -13,9 +13,7 @@ abstract class Node implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Costruisce un nodo dell'albero usando l'intervallo di esempi specificato.
-     */
+    /* Costruisce un nodo dell'albero usando l'intervallo di esempi specificato. */
     Node(Data trainingSet, int beginIndex, int endIndex) {
         this.trainingSet = trainingSet;
         this.beginIndex = beginIndex;
@@ -23,9 +21,7 @@ abstract class Node implements Serializable {
         this.variance = computeVariance();
     }
 
-    /**
-     * Calcola la varianza del target sugli esempi del nodo.
-     */
+    /* Calcola la varianza del target sugli esempi del nodo. */
     private double computeVariance() {
         double sum = 0;
         for (int i = beginIndex; i <= endIndex; i++) {
@@ -40,14 +36,10 @@ abstract class Node implements Serializable {
         return sumSq;
     }
 
-    /**
-     * Stampa la struttura del sottoalbero a partire da questo nodo.
-     */
+    /* Stampa la struttura del sottoalbero a partire da questo nodo. */
     abstract void printTree(String indent);
 
-    /**
-     * Costruisce e stampa le regole associate al sottoalbero.
-     */
+    /* Costruisce e stampa le regole associate al sottoalbero. */
     void printRules(String prefix) {
         List<String> rules = new ArrayList<>();
         collectRules(prefix, rules);
@@ -56,28 +48,20 @@ abstract class Node implements Serializable {
         }
     }
 
-    /**
-     * Colleziona le regole di classificazione dal sottoalbero.
-     */
+    /* Colleziona le regole di classificazione dal sottoalbero. */
     abstract void collectRules(String prefix, List<String> rules);
 
-    /**
-     * Restituisce il numero di figli del nodo (0 per i nodi foglia).
-     */
+    /* Restituisce il numero di figli del nodo (0 per i nodi foglia). */
     int getNumberOfChildren() {
         return 0;
     }
 
-    /**
-     * Restituisce la varianza calcolata per il nodo.
-     */
+    /* Restituisce la varianza calcolata per il nodo. */
     double getVariance() {
         return variance;
     }
 
-    /**
-     * Rappresentazione testuale dell'intervallo di esempi del nodo.
-     */
+    /* Rappresentazione testuale dell'intervallo di esempi del nodo. */
     @Override
     public String toString() {
         return "[" + beginIndex + " - " + endIndex + "]";

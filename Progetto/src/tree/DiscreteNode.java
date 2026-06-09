@@ -7,16 +7,12 @@ import data.Data;
 
 public class DiscreteNode extends SplitNode {
 
-    /**
-     * Costruisce un nodo di split per un attributo discreto.
-     */
+    /* Costruisce un nodo di split per un attributo discreto. */
     DiscreteNode(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
         super(trainingSet, beginExampleIndex, endExampleIndex, attribute);
     }
 
-    /**
-     * Costruisce i segmenti di esempi per ciascun valore discreto dell'attributo.
-     */
+    /* Costruisce i segmenti di esempi per ciascun valore discreto dell'attributo. */
     @Override
     void setSplitInfo(Data trainingSet, int beginExampleIndex, int endExampleIndex, Attribute attribute) {
         List<SplitInfo> splits = new ArrayList<>();
@@ -35,9 +31,7 @@ public class DiscreteNode extends SplitNode {
         mapSplit = splits;
     }
 
-    /**
-     * Restituisce il ramo corrispondente al valore discreto di input.
-     */
+    /* Restituisce il ramo corrispondente al valore discreto di input. */
     @Override
     int testCondition(Object value) {
         int index = 0;

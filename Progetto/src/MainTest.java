@@ -9,9 +9,7 @@ import tree.UnknownValueException;
 class MainTest {
     private static final Scanner scanner = new Scanner(System.in);
 
-    /**
-     * Avvia l'esecuzione del programma, legge il dataset e costruisce l'albero.
-     */
+    /* Avvia l'esecuzione del programma, legge il dataset e costruisce l'albero. */
     public static void main(String[] args) {
         int decision = 0;
         do {
@@ -65,9 +63,7 @@ class MainTest {
         } while (Character.toUpperCase(risp) == 'Y');
     }
 
-    /**
-     * Legge un intero dall'input standard in modo robusto.
-     */
+    /* Legge un intero dall'input standard in modo robusto. */
     private static int readInt(Scanner scanner) {
         while (true) {
             if (!scanner.hasNextLine()) {
@@ -86,9 +82,7 @@ class MainTest {
         }
     }
 
-    /**
-     * Legge una stringa dall'input standard.
-     */
+    /* Legge una stringa dall'input standard. */
     private static String readString(Scanner scanner) {
         if (!scanner.hasNextLine()) {
             return "";
@@ -96,9 +90,7 @@ class MainTest {
         return scanner.nextLine().trim();
     }
 
-    /**
-     * Legge un carattere dall'input standard.
-     */
+    /* Legge un carattere dall'input standard. */
     private static char readChar(Scanner scanner) {
         if (!scanner.hasNextLine()) {
             return 'n';
@@ -107,9 +99,7 @@ class MainTest {
         return line.isEmpty() ? 'n' : line.charAt(0);
     }
 
-    /**
-     * Risolve il percorso del file di dati a partire dalla directory corrente e dalle posizioni attese.
-     */
+    /* Risolve il percorso del file di dati a partire dalla directory corrente e dalle posizioni attese. */
     private static String resolveDataFilePath(String fileName) {
         Path filePath = Paths.get(fileName);
         if (filePath.toFile().exists()) {

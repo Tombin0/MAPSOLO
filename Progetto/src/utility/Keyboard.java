@@ -21,9 +21,7 @@ public class Keyboard {
     // Returns the current error count.
     // -----------------------------------------------------------------
 
-    /**
-     * Restituisce il numero di errori di input registrati.
-     */
+    /* Restituisce il numero di errori di input registrati. */
     public static int getErrorCount() {
         return errorCount;
     }
@@ -32,9 +30,7 @@ public class Keyboard {
     // Resets the current error count to zero.
     // -----------------------------------------------------------------
 
-    /**
-     * Resetta il contatore degli errori al valore specificato.
-     */
+    /* Resetta il contatore degli errori al valore specificato. */
     public static void resetErrorCount(int count) {
         errorCount = count;
     }
@@ -44,9 +40,7 @@ public class Keyboard {
     // currently printed to standard output.
     // -----------------------------------------------------------------
 
-    /**
-     * Restituisce true se gli errori di input vengono mostrati su console.
-     */
+    /* Restituisce true se gli errori di input vengono mostrati su console. */
     public static boolean getPrintErrors() {
         return printErrors;
     }
@@ -56,9 +50,7 @@ public class Keyboard {
     // printed to standard output.
     // -----------------------------------------------------------------
 
-    /**
-     * Imposta la stampa degli errori di input su console.
-     */
+    /* Imposta la stampa degli errori di input su console. */
     public static void setPrintErrors(boolean flag) {
         printErrors = flag;
     }
@@ -68,9 +60,7 @@ public class Keyboard {
     // appropriate.
     // -----------------------------------------------------------------
 
-    /**
-     * Registra un errore e, se abilitato, lo stampa.
-     */
+    /* Registra un errore e, se abilitato, lo stampa. */
     private static void error(String str) {
         errorCount++;
         if (printErrors)
@@ -91,9 +81,7 @@ public class Keyboard {
     // input lines.
     // -----------------------------------------------------------------
 
-    /**
-     * Restituisce il token successivo, leggendo anche linee successive se necessario.
-     */
+    /* Restituisce il token successivo, leggendo anche linee successive se necessario. */
     private static String getNextToken() {
         return getNextToken(true);
     }
@@ -102,9 +90,7 @@ public class Keyboard {
     // Gets the next input token, which may already have been read.
     // -----------------------------------------------------------------
 
-    /**
-     * Restituisce il token corrente o legge il successivo se non è già stato memorizzato.
-     */
+    /* Restituisce il token corrente o legge il successivo se non è già stato memorizzato. */
     private static String getNextToken(boolean skip) {
         String token;
 
@@ -124,9 +110,7 @@ public class Keyboard {
     // determines if subsequent lines are used.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge il prossimo token dalla riga corrente o da quelle successive.
-     */
+    /* Legge il prossimo token dalla riga corrente o da quelle successive. */
     private static String getNextInputToken(boolean skip) {
         final String delimiters = " \t\n\r\f";
         String token = null;
@@ -154,9 +138,7 @@ public class Keyboard {
     // current input line.
     // -----------------------------------------------------------------
 
-    /**
-     * Ritorna true se non ci sono più token sulla linea corrente.
-     */
+    /* Ritorna true se non ci sono più token sulla linea corrente. */
     public static boolean endOfLine() {
         return !reader.hasMoreTokens();
     }
@@ -167,9 +149,7 @@ public class Keyboard {
     // Returns a string read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge una stringa completa dall'input standard.
-     */
+    /* Legge una stringa completa dall'input standard. */
     public static String readString() {
         String str;
 
@@ -190,9 +170,7 @@ public class Keyboard {
     // standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge la prossima parola delimitata da spazio.
-     */
+    /* Legge la prossima parola delimitata da spazio. */
     public static String readWord() {
         String token;
         try {
@@ -208,9 +186,7 @@ public class Keyboard {
     // Returns a boolean read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge un valore booleano dall'input standard.
-     */
+    /* Legge un valore booleano dall'input standard. */
     public static boolean readBoolean() {
         String token = getNextToken();
         boolean bool;
@@ -234,9 +210,7 @@ public class Keyboard {
     // Returns a character read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge un singolo carattere dall'input standard.
-     */
+    /* Legge un singolo carattere dall'input standard. */
     public static char readChar() {
         String token = getNextToken(false);
         char value;
@@ -258,9 +232,7 @@ public class Keyboard {
     // Returns an integer read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge un intero dall'input standard.
-     */
+    /* Legge un intero dall'input standard. */
     public static int readInt() {
         String token = getNextToken();
         int value;
@@ -277,9 +249,7 @@ public class Keyboard {
     // Returns a long integer read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge un long dall'input standard.
-     */
+    /* Legge un long dall'input standard. */
     public static long readLong() {
         String token = getNextToken();
         long value;
@@ -296,9 +266,7 @@ public class Keyboard {
     // Returns a float read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge un float dall'input standard.
-     */
+    /* Legge un float dall'input standard. */
     public static float readFloat() {
         String token = getNextToken();
         float value;
@@ -315,9 +283,7 @@ public class Keyboard {
     // Returns a double read from standard input.
     // -----------------------------------------------------------------
 
-    /**
-     * Legge un double dall'input standard.
-     */
+    /* Legge un double dall'input standard. */
     public static double readDouble() {
         String token = getNextToken();
         double value;

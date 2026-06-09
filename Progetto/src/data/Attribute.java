@@ -8,39 +8,29 @@ public abstract class Attribute implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Costruisce un attributo con nome e indice.
-     */
+    /* Costruisce un attributo con nome e indice. */
     public Attribute(String name, int index) {
         this.name = name;
         this.index = index;
     }
 
-    /**
-     * Restituisce il nome dell'attributo.
-     */
+    /* Restituisce il nome dell'attributo. */
     public String getName() {
         return name;
     }
 
-    /**
-     * Restituisce l'indice dell'attributo nella riga dei dati.
-     */
+    /* Restituisce l'indice dell'attributo nella riga dei dati. */
     public int getIndex() {
         return index;
     }
 
-    /**
-     * Rappresentazione testuale dell'attributo.
-     */
+    /* Rappresentazione testuale dell'attributo. */
     @Override
     public String toString() {
         return name;
     }
 
-    /**
-     * Confronta due attributi per nome e indice.
-     */
+    /* Confronta due attributi per nome e indice. */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -53,9 +43,7 @@ public abstract class Attribute implements Serializable {
         return index == other.index && name.equals(other.name);
     }
 
-    /**
-     * Calcola l'hash code basato su nome e indice.
-     */
+    /* Calcola l'hash code basato su nome e indice. */
     @Override
     public int hashCode() {
         int result = 17;

@@ -7,9 +7,7 @@ import java.util.Iterator;
 public class DiscreteAttribute extends Attribute implements Iterable<String> {
     private Set<String> values;
 
-    /**
-     * Costruisce un attributo discreto con l'insieme dei valori possibili.
-     */
+    /* Costruisce un attributo discreto con l'insieme dei valori possibili. */
     public DiscreteAttribute(String name, int index, String[] valuesArray) {
         super(name, index);
         this.values = new TreeSet<String>();
@@ -18,16 +16,12 @@ public class DiscreteAttribute extends Attribute implements Iterable<String> {
         }
     }
 
-    /**
-     * Restituisce il numero di valori distinti supportati dall'attributo.
-     */
+    /* Restituisce il numero di valori distinti supportati dall'attributo. */
     public int getNumberOfDistinctValues() {
         return values.size();
     }
 
-    /**
-     * Restituisce il valore discreto alla posizione specificata.
-     */
+    /* Restituisce il valore discreto alla posizione specificata. */
     public String getValue(int i) {
         int index = 0;
         for (String value : values) {
@@ -39,16 +33,12 @@ public class DiscreteAttribute extends Attribute implements Iterable<String> {
         return null;
     }
 
-    /**
-     * Restituisce una copia dell'array dei valori distinti.
-     */
+    /* Restituisce una copia dell'array dei valori distinti. */
     public String[] getValues() {
         return values.toArray(new String[0]);
     }
 
-    /**
-     * Implementa l'interfaccia Iterable per iterare sui valori distinti.
-     */
+    /* Implementa l'interfaccia Iterable per iterare sui valori distinti. */
     @Override
     public Iterator<String> iterator() {
         return values.iterator();

@@ -13,9 +13,7 @@ public class Data implements java.io.Serializable {
     private List<Attribute> explanatorySet;
     private ContinuousAttribute classAttribute;
 
-    /**
-     * Carica il dataset dal file e inizializza attributi e target.
-     */
+    /* Carica il dataset dal file e inizializza attributi e target. */
     public Data(String fileName) throws TrainingDataException {
         File inFile = new File(fileName);
         Scanner sc;
@@ -121,9 +119,7 @@ public class Data implements java.io.Serializable {
         }
     }
 
-    /**
-     * Restituisce la rappresentazione testuale dell'intero dataset.
-     */
+    /* Restituisce la rappresentazione testuale dell'intero dataset. */
     @Override
     public String toString(){
         StringBuilder value = new StringBuilder();
@@ -135,58 +131,42 @@ public class Data implements java.io.Serializable {
         return value.toString();
     }
 
-    /**
-     * Restituisce il numero di attributi esplicativi disponibili.
-     */
+    /* Restituisce il numero di attributi esplicativi disponibili. */
     public int getNumberOfExplanatoryAttributes(){
         return explanatorySet.size();
     }
 
-    /**
-     * Restituisce il numero di esempi presenti nel dataset.
-     */
+    /* Restituisce il numero di esempi presenti nel dataset. */
     public int getNumberOfExamples(){
         return numberOfExamples;
     }
 
-    /**
-     * Restituisce il valore del target per l'esempio richiesto.
-     */
+    /* Restituisce il valore del target per l'esempio richiesto. */
     public Double getClassValue(int exampleIndex){
         return (Double) data[exampleIndex][explanatorySet.size()];
     }
 
-    /**
-     * Restituisce il valore dell'attributo esplicativo per l'esempio specificato.
-     */
+    /* Restituisce il valore dell'attributo esplicativo per l'esempio specificato. */
     public Object getExplanatoryValue(int exampleIndex, int attributeIndex){
         return data[exampleIndex][attributeIndex];
     }
 
-    /**
-     * Restituisce l'attributo esplicativo in posizione index.
-     */
+    /* Restituisce l'attributo esplicativo in posizione index. */
     public Attribute getExplanatoryAttribute(int index){
         return explanatorySet.get(index);
     }
 
-    /**
-     * Restituisce l'attributo target continuo.
-     */
+    /* Restituisce l'attributo target continuo. */
     public ContinuousAttribute getClassAttribute(){
         return classAttribute;
     }
 
-    /**
-     * Ordina gli esempi in base all'attributo specificato.
-     */
+    /* Ordina gli esempi in base all'attributo specificato. */
     public void sort(Attribute attribute, int beginExampleIndex, int endExampleIndex){
         quicksort(attribute, beginExampleIndex, endExampleIndex);
     }
 
-    /**
-     * Scambia due righe del dataset mantenendo tutti gli attributi e il target.
-     */
+    /* Scambia due righe del dataset mantenendo tutti gli attributi e il target. */
     private void swap(int i, int j){
         Object temp;
         for (int k = 0; k < getNumberOfExplanatoryAttributes() + 1; k++){
@@ -196,10 +176,7 @@ public class Data implements java.io.Serializable {
         }
     }
 
-    /**
-     * Confronta due valori esplicativi per l'ordinamento.
-     * Supporta valori numerici e stringhe.
-     */
+    /* Confronta due valori esplicativi per l'ordinamento. Supporta valori numerici e stringhe. */
     private int compareExplanatoryValues(Object a, Object b) {
         if (a == null && b == null) {
             return 0;
@@ -216,9 +193,7 @@ public class Data implements java.io.Serializable {
         return a.toString().compareTo(b.toString());
     }
 
-    /**
-     * Partiziona il dataset usando l'attributo specificato come pivot.
-     */
+    /* Partiziona il dataset usando l'attributo specificato come pivot. */
     private int partition(Attribute attribute, int inf, int sup){
         int i = inf;
         int j = sup;
@@ -241,9 +216,7 @@ public class Data implements java.io.Serializable {
         return j;
     }
 
-    /**
-     * Implementa l'algoritmo quicksort ricorsivo per ordinare il dataset.
-     */
+    /* Implementa l'algoritmo quicksort ricorsivo per ordinare il dataset. */
     private void quicksort(Attribute attribute, int inf, int sup){
         if(sup >= inf){
             int pos = partition(attribute, inf, sup);
@@ -258,9 +231,7 @@ public class Data implements java.io.Serializable {
         }
     }
 
-    /**
-     * Test locale per stampare il dataset e provare l'ordinamento.
-     */
+    /* Test locale per stampare il dataset e provare l'ordinamento. */
     public static void main(String args[]) throws TrainingDataException {
         Data trainingSet = new Data("servo.dat");
         System.out.println(trainingSet);

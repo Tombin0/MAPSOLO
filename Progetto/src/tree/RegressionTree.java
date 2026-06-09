@@ -12,9 +12,7 @@ public class RegressionTree implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
     private Node root;
 
-    /**
-     * Costruisce l'albero di regressione a partire dal dataset di training.
-     */
+    /* Costruisce l'albero di regressione a partire dal dataset di training. */
     public RegressionTree(Data trainingSet) {
         Attribute[] availableAttributes = new Attribute[trainingSet.getNumberOfExplanatoryAttributes()];
         for (int i = 0; i < availableAttributes.length; i++) {
@@ -24,16 +22,12 @@ public class RegressionTree implements java.io.Serializable {
         root = learnTree(trainingSet, 0, trainingSet.getNumberOfExamples() - 1, numberOfExamplesPerLeaf, availableAttributes);
     }
 
-    /**
-     * Determina se il nodo deve diventare una foglia in base alla dimensione minima.
-     */
+    /* Determina se il nodo deve diventare una foglia in base alla dimensione minima. */
     private boolean isLeaf(Data trainingSet, int begin, int end, int numberOfExamplesPerLeaf) {
         return (end - begin + 1) <= numberOfExamplesPerLeaf;
     }
 
-    /**
-     * Valuta tutti gli attributi disponibili e restituisce lo split migliore usando TreeSet.
-     */
+    /* Valuta tutti gli attributi disponibili e restituisce lo split migliore usando TreeSet. */
     private SplitNode determineBestSplitNode(Data trainingSet, int begin, int end, Attribute[] availableAttributes) {
         TreeSet<SplitNode> splitCandidates = new TreeSet<>();
 
@@ -53,9 +47,7 @@ public class RegressionTree implements java.io.Serializable {
         return splitCandidates.isEmpty() ? null : splitCandidates.first();
     }
 
-    /**
-     * Costruisce l'albero ricorsivamente, creando foglie o nodi di split.
-     */
+    /* Costruisce l'albero ricorsivamente, creando foglie o nodi di split. */
     private Node learnTree(Data trainingSet, int begin, int end, int numberOfExamplesPerLeaf, Attribute[] availableAttributes) {
         if (begin > end) {
             return null;
@@ -80,9 +72,7 @@ public class RegressionTree implements java.io.Serializable {
         return bestSplit;
     }
 
-    /**
-     * Rimuove l'attributo già utilizzato dall'elenco di attributi disponibili.
-     */
+    /* Rimuove l'attributo già utilizzato dall'elenco di attributi disponibili. */
     private Attribute[] removeAttribute(Attribute[] attributes, Attribute attributeToRemove) {
         Attribute[] result = new Attribute[attributes.length - 1];
         int idx = 0;
@@ -94,9 +84,7 @@ public class RegressionTree implements java.io.Serializable {
         return result;
     }
 
-    /**
-     * Stampa tutte le regole estratte dall'albero.
-     */
+    /* Stampa tutte le regole estratte dall'albero. */
     public void printRules() {
         System.out.println("********* RULES **********");
         if (root != null) {
@@ -105,9 +93,7 @@ public class RegressionTree implements java.io.Serializable {
         System.out.println("*************************");
     }
 
-    /**
-     * Stampa la rappresentazione testuale dell'intero albero.
-     */
+    /* Stampa la rappresentazione testuale dell'intero albero. */
     public void printTree() {
         System.out.println("********* TREE **********");
         if (root != null) {
@@ -116,9 +102,7 @@ public class RegressionTree implements java.io.Serializable {
         System.out.println("*************************");
     }
 
-    /**
-     * Avvia la predizione partendo dalla radice.
-     */
+    /* Avvia la predizione partendo dalla radice. */
     public Double predictClass() throws UnknownValueException {
         if (root == null) {
             return null;
@@ -126,9 +110,7 @@ public class RegressionTree implements java.io.Serializable {
         return predictClass(root);
     }
 
-    /**
-     * Predice il valore seguendo i rami dell'albero in base alle risposte dell'utente.
-     */
+    /* Predice il valore seguendo i rami dell'albero in base alle risposte dell'utente. */
     private Double predictClass(Node current) throws UnknownValueException {
         if (current instanceof LeafNode) {
             return ((LeafNode) current).getMean();
@@ -143,9 +125,7 @@ public class RegressionTree implements java.io.Serializable {
         return predictClass(splitNode.children[risp]);
     }
 
-    /**
-     * Legge un intero dalla console per la fase di predizione.
-     */
+    /* Legge un intero dalla console per la fase di predizione. */
     private static int readIntFromConsole() {
         if (!scanner.hasNextLine()) {
             return -1;
@@ -161,18 +141,14 @@ public class RegressionTree implements java.io.Serializable {
         }
     }
 
-    /**
-     * Salva l'oggetto RegressionTree su file usando serializzazione Java.
-     */
+    /* Salva l'oggetto RegressionTree su file usando serializzazione Java. */
     public void salva(String fileName) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName))) {
             oos.writeObject(this);
         }
     }
 
-    /**
-     * Carica una RegressionTree serializzata da file.
-     */
+    /* Carica una RegressionTree serializzata da file. */
     public static RegressionTree carica(String fileName) throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
             return (RegressionTree) ois.readObject();
