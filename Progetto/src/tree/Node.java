@@ -1,6 +1,9 @@
+package tree;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import data.Data;
 
 abstract class Node implements Serializable {
     protected Data trainingSet;

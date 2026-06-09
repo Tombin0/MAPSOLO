@@ -1,3 +1,5 @@
+package tree;
+
 public class UnknownValueException extends Exception {
 
     /**

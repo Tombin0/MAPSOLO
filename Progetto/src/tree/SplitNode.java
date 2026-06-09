@@ -1,5 +1,9 @@
+package tree;
+
 import java.util.List;
-import java.util.ArrayList;
+import data.Attribute;
+import data.Data;
+import data.DiscreteAttribute;
 
 abstract class SplitNode extends Node implements Comparable<SplitNode> {
     // Classe che colelzione informazioni descrittive dello split

@@ -1,5 +1,9 @@
+package tree;
+
 import java.util.ArrayList;
 import java.util.List;
+import data.Attribute;
+import data.Data;
 
 public class DiscreteNode extends SplitNode {
 

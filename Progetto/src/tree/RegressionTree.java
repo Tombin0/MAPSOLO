@@ -1,9 +1,14 @@
-import utility.Keyboard;
-import java.util.Set;
+package tree;
+
+import java.util.Scanner;
 import java.util.TreeSet;
 import java.io.*;
+import data.Attribute;
+import data.Data;
+import data.DiscreteAttribute;
 
 public class RegressionTree implements java.io.Serializable {
+    private static final Scanner scanner = new Scanner(System.in);
     private static final long serialVersionUID = 1L;
     private Node root;
 
@@ -131,11 +136,29 @@ public class RegressionTree implements java.io.Serializable {
 
         SplitNode splitNode = (SplitNode) current;
         System.out.println(splitNode.formulateQuery());
-        int risp = Keyboard.readInt();
+        int risp = readIntFromConsole();
         if (risp < 0 || risp >= splitNode.getNumberOfChildren()) {
             throw new UnknownValueException("The answer should be an integer between 0 and " + (splitNode.getNumberOfChildren() - 1) + "!");
         }
         return predictClass(splitNode.children[risp]);
+    }
+
+    /**
+     * Legge un intero dalla console per la fase di predizione.
+     */
+    private static int readIntFromConsole() {
+        if (!scanner.hasNextLine()) {
+            return -1;
+        }
+        String line = scanner.nextLine().trim();
+        if (line.isEmpty()) {
+            return -1;
+        }
+        try {
+            return Integer.parseInt(line);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     /**

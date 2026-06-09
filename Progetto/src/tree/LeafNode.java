@@ -1,4 +1,7 @@
+package tree;
+
 import java.util.List;
+import data.Data;
 
 class LeafNode extends Node {
     private final double mean;

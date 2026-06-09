@@ -1,3 +1,5 @@
+package data;
+
 import java.io.File;
 import java.util.Scanner;
 import java.util.List;
@@ -14,7 +16,7 @@ public class Data implements java.io.Serializable {
     /**
      * Carica il dataset dal file e inizializza attributi e target.
      */
-    Data(String fileName) throws TrainingDataException {
+    public Data(String fileName) throws TrainingDataException {
         File inFile = new File(fileName);
         Scanner sc;
         try {
@@ -178,7 +180,7 @@ public class Data implements java.io.Serializable {
     /**
      * Ordina gli esempi in base all'attributo specificato.
      */
-    void sort(Attribute attribute, int beginExampleIndex, int endExampleIndex){
+    public void sort(Attribute attribute, int beginExampleIndex, int endExampleIndex){
         quicksort(attribute, beginExampleIndex, endExampleIndex);
     }
 
