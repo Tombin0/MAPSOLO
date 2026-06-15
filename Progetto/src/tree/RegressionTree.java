@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.TreeSet;
 import java.io.*;
 import data.Attribute;
+import data.ContinuousAttribute;
 import data.Data;
 import data.DiscreteAttribute;
 
@@ -27,24 +28,29 @@ public class RegressionTree implements java.io.Serializable {
         return (end - begin + 1) <= numberOfExamplesPerLeaf;
     }
 
-    /* Valuta tutti gli attributi disponibili e restituisce lo split migliore usando TreeSet. */
+    /* Valuta tutti gli attributi disponibili e restituisce lo split migliore.
+       Usa RTTI per distinguere attributi discreti e continui a runtime. */
     private SplitNode determineBestSplitNode(Data trainingSet, int begin, int end, Attribute[] availableAttributes) {
-        TreeSet<SplitNode> splitCandidates = new TreeSet<>();
+        SplitNode bestSplit = null;
 
         for (Attribute attribute : availableAttributes) {
             SplitNode candidate;
             if (attribute instanceof DiscreteAttribute) {
                 candidate = new DiscreteNode(trainingSet, begin, end, attribute);
-            } else {
+            } else if (attribute instanceof ContinuousAttribute) {
                 candidate = new ContinuousNode(trainingSet, begin, end, attribute);
+            } else {
+                throw new IllegalArgumentException("Unsupported attribute type: " + attribute.getClass().getName());
             }
+
             if (candidate.getNumberOfChildren() > 1) {
-                splitCandidates.add(candidate);
+                if (bestSplit == null || candidate.getVariance() < bestSplit.getVariance()) {
+                    bestSplit = candidate;
+                }
             }
         }
 
-        // TreeSet è ordinato per compareTo(), quindi il primo elemento ha la varianza minima
-        return splitCandidates.isEmpty() ? null : splitCandidates.first();
+        return bestSplit;
     }
 
     /* Costruisce l'albero ricorsivamente, creando foglie o nodi di split. */
