@@ -86,6 +86,14 @@ abstract class SplitNode extends Node implements Comparable<SplitNode> {
         this.children = children;
     }
 
+    /* Restituisce il figlio alla posizione specificata oppure null se non definito. */
+    Node getChild(int index) {
+        if (children == null || index < 0 || index >= children.length) {
+            return null;
+        }
+        return children[index];
+    }
+
     /* Restituisce l'attributo su cui è basato lo split. */
     Attribute getAttribute() {
         return attribute;
@@ -141,8 +149,7 @@ abstract class SplitNode extends Node implements Comparable<SplitNode> {
             if (children != null && index < children.length && children[index] != null) {
                 children[index].collectRules(newPrefix, rules);
             } else {
-                double mean = new LeafNode(trainingSet, info.getBeginindex(), info.getEndIndex()).getMean();
-                rules.add(newPrefix + " ==> Class=" + mean);
+                throw new IllegalStateException("Incomplete tree structure: missing child for split " + info + " on attribute " + attribute.getName());
             }
             index++;
         }

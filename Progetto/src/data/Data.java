@@ -195,7 +195,7 @@ public class Data implements java.io.Serializable {
 
     /* Partiziona il dataset usando l'attributo specificato come pivot. */
     private int partition(Attribute attribute, int inf, int sup){
-        int i = inf;
+        int i = inf + 1;
         int j = sup;
         int med = (inf + sup) / 2;
         Object pivot = getExplanatoryValue(med, attribute.getIndex());
@@ -204,13 +204,14 @@ public class Data implements java.io.Serializable {
             while (i <= sup && compareExplanatoryValues(getExplanatoryValue(i, attribute.getIndex()), pivot) <= 0) {
                 i++;
             }
-            while (compareExplanatoryValues(getExplanatoryValue(j, attribute.getIndex()), pivot) > 0) {
+            while (j >= inf + 1 && compareExplanatoryValues(getExplanatoryValue(j, attribute.getIndex()), pivot) > 0) {
                 j--;
             }
             if (i < j) {
                 swap(i, j);
+            } else {
+                break;
             }
-            else break;
         }
         swap(inf, j);
         return j;
@@ -218,13 +219,12 @@ public class Data implements java.io.Serializable {
 
     /* Implementa l'algoritmo quicksort ricorsivo per ordinare il dataset. */
     private void quicksort(Attribute attribute, int inf, int sup){
-        if(sup >= inf){
+        if (inf < sup) {
             int pos = partition(attribute, inf, sup);
             if ((pos - inf) < (sup - pos + 1)) {
                 quicksort(attribute, inf, pos - 1);
                 quicksort(attribute, pos + 1, sup);
-            }
-            else{
+            } else {
                 quicksort(attribute, pos + 1, sup);
                 quicksort(attribute, inf, pos - 1);
             }

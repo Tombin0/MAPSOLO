@@ -31,7 +31,7 @@ public class RegressionTree implements java.io.Serializable {
     /* Valuta tutti gli attributi disponibili e restituisce lo split migliore.
        Usa RTTI per distinguere attributi discreti e continui a runtime. */
     private SplitNode determineBestSplitNode(Data trainingSet, int begin, int end, Attribute[] availableAttributes) {
-        SplitNode bestSplit = null;
+        TreeSet<SplitNode> candidates = new TreeSet<>();
 
         for (Attribute attribute : availableAttributes) {
             SplitNode candidate;
@@ -44,13 +44,11 @@ public class RegressionTree implements java.io.Serializable {
             }
 
             if (candidate.getNumberOfChildren() > 1) {
-                if (bestSplit == null || candidate.getVariance() < bestSplit.getVariance()) {
-                    bestSplit = candidate;
-                }
+                candidates.add(candidate);
             }
         }
 
-        return bestSplit;
+        return candidates.isEmpty() ? null : candidates.first();
     }
 
     /* Costruisce l'albero ricorsivamente, creando foglie o nodi di split. */
@@ -68,11 +66,14 @@ public class RegressionTree implements java.io.Serializable {
             return leaf;
         }
 
-        Attribute[] remainingAttributes = removeAttribute(availableAttributes, bestSplit.getAttribute());
+        Attribute[] nextAttributes = bestSplit.getAttribute() instanceof DiscreteAttribute
+                ? removeAttribute(availableAttributes, bestSplit.getAttribute())
+                : availableAttributes;
+
         Node[] children = new Node[bestSplit.getNumberOfChildren()];
         for (int i = 0; i < bestSplit.getNumberOfChildren(); i++) {
             SplitNode.SplitInfo info = bestSplit.getSplitInfo(i);
-            children[i] = learnTree(trainingSet, info.getBeginindex(), info.getEndIndex(), numberOfExamplesPerLeaf, remainingAttributes);
+            children[i] = learnTree(trainingSet, info.getBeginindex(), info.getEndIndex(), numberOfExamplesPerLeaf, nextAttributes);
         }
         bestSplit.setChildren(children);
         return bestSplit;
@@ -128,7 +129,11 @@ public class RegressionTree implements java.io.Serializable {
         if (risp < 0 || risp >= splitNode.getNumberOfChildren()) {
             throw new UnknownValueException("The answer should be an integer between 0 and " + (splitNode.getNumberOfChildren() - 1) + "!");
         }
-        return predictClass(splitNode.children[risp]);
+        Node child = splitNode.getChild(risp);
+        if (child == null) {
+            throw new IllegalStateException("Split node child is missing for response " + risp + " on attribute " + splitNode.getAttribute().getName());
+        }
+        return predictClass(child);
     }
 
     /* Legge un intero dalla console per la fase di predizione. */
