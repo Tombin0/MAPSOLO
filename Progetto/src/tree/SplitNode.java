@@ -169,6 +169,10 @@ abstract class SplitNode extends Node implements Comparable<SplitNode> {
     /* Implementa Comparable per confrontare SplitNode basato su splitVariance. Restituisce un valore negativo se this ha varianza minore (meglio), zero se uguali, positivo se this ha varianza maggiore (peggio). */
     @Override
     public int compareTo(SplitNode other) {
-        return Double.compare(this.splitVariance, other.splitVariance);
+        int result = Double.compare(this.splitVariance, other.splitVariance);
+        if (result != 0) {
+            return result;
+        }
+        return Integer.compare(this.attribute.getIndex(), other.attribute.getIndex());
     }
 }

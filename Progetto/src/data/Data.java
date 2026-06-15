@@ -195,39 +195,29 @@ public class Data implements java.io.Serializable {
 
     /* Partiziona il dataset usando l'attributo specificato come pivot. */
     private int partition(Attribute attribute, int inf, int sup){
-        int i = inf + 1;
-        int j = sup;
-        int med = (inf + sup) / 2;
-        Object pivot = getExplanatoryValue(med, attribute.getIndex());
-        swap(inf, med);
+        int i = inf - 1;
+        int j = sup + 1;
+        Object pivot = getExplanatoryValue((inf + sup) / 2, attribute.getIndex());
         while (true) {
-            while (i <= sup && compareExplanatoryValues(getExplanatoryValue(i, attribute.getIndex()), pivot) <= 0) {
+            do {
                 i++;
-            }
-            while (j >= inf + 1 && compareExplanatoryValues(getExplanatoryValue(j, attribute.getIndex()), pivot) > 0) {
+            } while (compareExplanatoryValues(getExplanatoryValue(i, attribute.getIndex()), pivot) < 0);
+            do {
                 j--;
+            } while (compareExplanatoryValues(getExplanatoryValue(j, attribute.getIndex()), pivot) > 0);
+            if (i >= j) {
+                return j;
             }
-            if (i < j) {
-                swap(i, j);
-            } else {
-                break;
-            }
+            swap(i, j);
         }
-        swap(inf, j);
-        return j;
     }
 
     /* Implementa l'algoritmo quicksort ricorsivo per ordinare il dataset. */
     private void quicksort(Attribute attribute, int inf, int sup){
         if (inf < sup) {
             int pos = partition(attribute, inf, sup);
-            if ((pos - inf) < (sup - pos + 1)) {
-                quicksort(attribute, inf, pos - 1);
-                quicksort(attribute, pos + 1, sup);
-            } else {
-                quicksort(attribute, pos + 1, sup);
-                quicksort(attribute, inf, pos - 1);
-            }
+            quicksort(attribute, inf, pos);
+            quicksort(attribute, pos + 1, sup);
         }
     }
 
