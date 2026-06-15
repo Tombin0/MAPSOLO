@@ -1,13 +1,12 @@
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Scanner;
 import data.Data;
 import data.TrainingDataException;
 import tree.RegressionTree;
 import tree.UnknownValueException;
+import utility.Keyboard;
 
 class MainTest {
-    private static final Scanner scanner = new Scanner(System.in);
 
     /* Avvia l'esecuzione del programma, legge il dataset e costruisce l'albero. */
     public static void main(String[] args) {
@@ -15,11 +14,11 @@ class MainTest {
         do {
             System.out.println("Learn Regression Tree from data [1]");
             System.out.println("Load Regression Tree from archive [2]");
-            decision = readInt(scanner);
+            decision = Keyboard.readInt();
         } while (!(decision == 1) && !(decision == 2));
 
         System.out.println("File name:");
-        String trainingfileName = readString(scanner);
+        String trainingfileName = Keyboard.readString();
 
         RegressionTree tree = null;
         if (decision == 1) {
@@ -59,44 +58,8 @@ class MainTest {
                 System.out.println(e);
             }
             System.out.println("Would you repeat ? (y/n)");
-            risp = readChar(scanner);
+            risp = Keyboard.readChar();
         } while (Character.toUpperCase(risp) == 'Y');
-    }
-
-    /* Legge un intero dall'input standard in modo robusto. */
-    private static int readInt(Scanner scanner) {
-        while (true) {
-            if (!scanner.hasNextLine()) {
-                return -1;
-            }
-            String line = scanner.nextLine().trim();
-            if (line.isEmpty()) {
-                System.out.println("Invalid input. Please enter an integer.");
-                continue;
-            }
-            try {
-                return Integer.parseInt(line);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid integer.");
-            }
-        }
-    }
-
-    /* Legge una stringa dall'input standard. */
-    private static String readString(Scanner scanner) {
-        if (!scanner.hasNextLine()) {
-            return "";
-        }
-        return scanner.nextLine().trim();
-    }
-
-    /* Legge un carattere dall'input standard. */
-    private static char readChar(Scanner scanner) {
-        if (!scanner.hasNextLine()) {
-            return 'n';
-        }
-        String line = scanner.nextLine().trim();
-        return line.isEmpty() ? 'n' : line.charAt(0);
     }
 
     /* Risolve il percorso del file di dati a partire dalla directory corrente e dalle posizioni attese. */
