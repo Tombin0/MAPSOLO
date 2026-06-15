@@ -33,11 +33,12 @@ public class RegressionTree implements java.io.Serializable {
         TreeSet<SplitNode> candidates = new TreeSet<>();
 
         for (Attribute attribute : availableAttributes) {
+            Data candidateData = trainingSet.copy();
             SplitNode candidate;
             if (attribute instanceof DiscreteAttribute) {
-                candidate = new DiscreteNode(trainingSet, begin, end, attribute);
+                candidate = new DiscreteNode(candidateData, begin, end, attribute);
             } else if (attribute instanceof ContinuousAttribute) {
-                candidate = new ContinuousNode(trainingSet, begin, end, attribute);
+                candidate = new ContinuousNode(candidateData, begin, end, attribute);
             } else {
                 throw new IllegalArgumentException("Unsupported attribute type: " + attribute.getClass().getName());
             }
@@ -60,11 +61,13 @@ public class RegressionTree implements java.io.Serializable {
             return leaf;
         }
 
+        double currentVariance = leaf.getVariance();
         SplitNode bestSplit = determineBestSplitNode(trainingSet, begin, end, availableAttributes);
-        if (bestSplit == null) {
+        if (bestSplit == null || bestSplit.getVariance() >= currentVariance) {
             return leaf;
         }
 
+        trainingSet.sort(bestSplit.getAttribute(), begin, end);
         Attribute[] nextAttributes = bestSplit.getAttribute() instanceof DiscreteAttribute
                 ? removeAttribute(availableAttributes, bestSplit.getAttribute())
                 : availableAttributes;

@@ -141,6 +141,23 @@ public class Data implements java.io.Serializable {
         return numberOfExamples;
     }
 
+    /* Crea una copia profonda dell'oggetto Data. */
+    public Data copy() {
+        return new Data(this);
+    }
+
+    /* Costruisce una copia del dataset esistente. */
+    public Data(Data other) {
+        this.numberOfExamples = other.numberOfExamples;
+        this.explanatorySet = new LinkedList<>(other.explanatorySet);
+        this.classAttribute = other.classAttribute;
+        int columns = other.getNumberOfExplanatoryAttributes() + 1;
+        this.data = new Object[numberOfExamples][columns];
+        for (int i = 0; i < numberOfExamples; i++) {
+            System.arraycopy(other.data[i], 0, this.data[i], 0, columns);
+        }
+    }
+
     /* Restituisce il valore del target per l'esempio richiesto. */
     public Double getClassValue(int exampleIndex){
         return (Double) data[exampleIndex][explanatorySet.size()];
