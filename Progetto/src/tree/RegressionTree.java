@@ -1,15 +1,14 @@
 package tree;
 
-import java.util.Scanner;
 import java.util.TreeSet;
 import java.io.*;
 import data.Attribute;
 import data.ContinuousAttribute;
 import data.Data;
 import data.DiscreteAttribute;
+import utility.Keyboard;
 
 public class RegressionTree implements java.io.Serializable {
-    private static final Scanner scanner = new Scanner(System.in);
     private static final long serialVersionUID = 1L;
     private Node root;
 
@@ -125,8 +124,8 @@ public class RegressionTree implements java.io.Serializable {
 
         SplitNode splitNode = (SplitNode) current;
         System.out.println(splitNode.formulateQuery());
-        int risp = readIntFromConsole();
-        if (risp < 0 || risp >= splitNode.getNumberOfChildren()) {
+        int risp = Keyboard.readInt();
+        if (risp == Integer.MIN_VALUE || risp < 0 || risp >= splitNode.getNumberOfChildren()) {
             throw new UnknownValueException("The answer should be an integer between 0 and " + (splitNode.getNumberOfChildren() - 1) + "!");
         }
         Node child = splitNode.getChild(risp);
@@ -134,22 +133,6 @@ public class RegressionTree implements java.io.Serializable {
             throw new IllegalStateException("Split node child is missing for response " + risp + " on attribute " + splitNode.getAttribute().getName());
         }
         return predictClass(child);
-    }
-
-    /* Legge un intero dalla console per la fase di predizione. */
-    private static int readIntFromConsole() {
-        if (!scanner.hasNextLine()) {
-            return -1;
-        }
-        String line = scanner.nextLine().trim();
-        if (line.isEmpty()) {
-            return -1;
-        }
-        try {
-            return Integer.parseInt(line);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
     }
 
     /* Salva l'oggetto RegressionTree su file usando serializzazione Java. */
